@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  // find one category by its `id` value
   Category.findOne({
     where: {
       id: req.params.id,
@@ -27,16 +26,25 @@ router.get("/:id", (req, res) => {
       res.json(categories);
     })
     .catch((err) => res.status(500).json(err));
-  // be sure to include its associated Products
 });
 
 router.post("/", (req, res) => {
   // create a new category
+  Category.create({
+    category_name: req.body.category_name,
+  })
+    .then((categories) => res.json(categories))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 router.put("/:id", (req, res) => {
   // update a category by its `id` value
-  Category.update({});
+  Category.update({
+    category,
+  });
 });
 
 router.delete("/:id", (req, res) => {
