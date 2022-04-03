@@ -6,7 +6,18 @@ const { sequelize } = require("../../models/Product");
 
 router.get("/", (req, res) => {
   // find all categories
-  Category.findAll({})
+  Category.findAll({
+    attributes: [
+      "id",
+      "category_name",
+      [
+        sequelize.literal(
+          "(SELECT COUNT(*) FROM category WHERE product.id = product.category_id)"
+        ),
+        "productCategories",
+      ],
+    ],
+  })
     .then((dbData) => {
       const categories = dbData.map((category) =>
         category.get({ plain: true })
@@ -16,7 +27,6 @@ router.get("/", (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
-  // be sure to include its associated Products
 });
 
 router.get("/:id", (req, res) => {
