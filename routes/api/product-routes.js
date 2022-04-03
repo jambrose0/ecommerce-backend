@@ -24,7 +24,26 @@ router.get("/", (req, res) => {
 
 // get one product
 // be sure to include its associated Category and Tag data
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  Product.findOne({
+    where: { id: req.body.id },
+    include: [
+      Category,
+      {
+        model: Tag,
+        through: ProductTag,
+      },
+    ],
+  })
+    .then((products) => {
+      if (!products) {
+        res.status(404).json({ message: "No products found with this id" });
+        return;
+      }
+      res.json(products);
+    })
+    .catch((err) => res.status(500).json(err));
+});
 
 // create new product
 router.post("/", (req, res) => {
