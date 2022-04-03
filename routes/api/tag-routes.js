@@ -48,26 +48,24 @@ router.post("/", (req, res) => {
       }
       res.json(tags);
     })
-    .catch((err) => res.status(500).json(err));
-  //   .then((tag) => {
-  //     // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-  //     if (req.body.tag_name) {
-  //       const productId = req.body.tag_name.map((tag_name) => {
-  //         return {
-  //           product_id: product.id,
-  //           tag_id,
-  //         };
-  //       });
-  //       return Product.bulkCreate(productId);
-  //     }
-  //     // if no product tags, just respond
-  //     res.status(200).json(product);
-  //   })
-  //   .then((newTags) => res.status(200).json(newTags))
-  //   .catch((err) => {
-  //     console.log(err);
-  //     res.status(400).json(err);
-  //   });
+    .then((tag) => {
+      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
+      if (req.body.tag_name) {
+        const productId = req.body.tag_name.map((tag_name) => {
+          return {
+            product_id: product.id,
+            tag_id,
+          };
+        });
+        return Product.bulkCreate(productId);
+      }
+      // if no product tags, just respond
+      res.status(200).json(product);
+    })
+    .then((newTags) => res.status(200).json(newTags))
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 // update a tag's name by its `id` value
