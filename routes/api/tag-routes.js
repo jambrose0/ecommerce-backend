@@ -37,10 +37,18 @@ router.get("/:id", (req, res) => {
 
 // create a new tag
 router.post("/", (req, res) => {
-  // Tag.create({
-  //   tag_name: req.body.tag_name,
-  //   include: [Product],
-  // })
+  Tag.create({
+    tag_name: req.body.tag_name,
+    include: [Product],
+  })
+    .then((tags) => {
+      if (!tags) {
+        res.status(404).json({ message: "No tags found with this id" });
+        return;
+      }
+      res.json(tags);
+    })
+    .catch((err) => res.status(500).json(err));
   //   .then((tag) => {
   //     // if there's product tags, we need to create pairings to bulk create in the ProductTag model
   //     if (req.body.tag_name) {
@@ -64,7 +72,19 @@ router.post("/", (req, res) => {
 
 // update a tag's name by its `id` value
 router.put("/:id", (req, res) => {
-  // Tag.update;
+  Tag.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((tags) => {
+      if (!tags) {
+        res.status(404).json({ message: "No tags found with this id" });
+        return;
+      }
+      res.json(tags);
+    })
+    .catch((err) => res.status(500).json(err));
 });
 
 // delete on tag by its `id` value
